@@ -1,0 +1,115 @@
+<?php $__env->startSection('content'); ?>
+<?php /**/ usort($tableGrid, "SiteHelpers::_sort") /**/ ?>
+  <div class="page-content row">
+
+	
+	<div class="page-content-wrapper m-t">	 	
+
+<div class="sbox">
+	<div class="sbox-title"> <h3> <?php echo e($pageTitle); ?> <small><?php echo e($pageNote); ?></small></h3>
+<div class="sbox-tools" >
+		<a href="<?php echo e(url($pageModule)); ?>" class="btn btn-xs btn-white tips"  title="<?php echo e(Lang::get('core.btn_clearsearch')); ?>" ><i class="fa fa-trash-o"></i> <?php echo e(Lang::get('core.btn_clearsearch')); ?> </a>
+		<?php if(Session::get('gid') ==1): ?>
+			<a href="<?php echo e(URL::to('sximo/module/config/'.$pageModule)); ?>" class="btn btn-xs btn-white tips" title=" <?php echo e(Lang::get('core.btn_config')); ?>" ><i class="fa fa-cog"></i></a>
+		<?php endif; ?> 
+		</div>
+	</div>
+	<div class="sbox-content"> 	
+	    <div class="toolbar-line ">
+			<?php if($access['is_add'] ==1): ?>
+	   		<a href="<?php echo e(URL::to('notification/update')); ?>" class="tips btn btn-sm btn-white"  title="<?php echo e(Lang::get('core.btn_create')); ?>">
+			<i class="icon-plus-circle2 "></i>&nbsp;<?php echo e(Lang::get('core.btn_create')); ?></a>
+			<?php endif; ?>  
+			<?php if($access['is_remove'] ==1): ?>
+			<a href="javascript://ajax"  onclick="SximoDelete();" class="tips btn btn-sm btn-white" title="<?php echo e(Lang::get('core.btn_remove')); ?>">
+			<i class="icon-remove4"></i>&nbsp;<?php echo e(Lang::get('core.btn_remove')); ?></a>
+			<?php endif; ?> 
+			<a href="<?php echo e(URL::to( 'notification/search')); ?>" class="btn btn-sm btn-white" onclick="SximoModal(this.href,'Advance Search'); return false;" title="<?php echo e(Lang::get('core.btn_search')); ?>"><i class="icon-search3"></i> <?php echo e(Lang::get('core.btn_search')); ?> </a>				
+			<?php if($access['is_excel'] ==1): ?>
+			<a href="<?php echo e(URL::to('notification/download?return='.$return)); ?>" class="tips btn btn-sm btn-white" title="<?php echo e(Lang::get('core.btn_download')); ?>">
+			<i class="icon-file-download"></i>&nbsp;<?php echo e(Lang::get('core.btn_download')); ?> </a>
+			<?php endif; ?>			
+		 
+		</div> 		
+
+	 <?php echo (isset($search_map) ? $search_map : ''); ?>
+
+	
+	 <?php echo Form::open(array('url'=>'notification/delete/', 'class'=>'form-horizontal' ,'id' =>'SximoTable' )); ?>
+
+	 <div class="table-responsive" style="min-height:300px;">
+    <table class="table table-striped ">
+        <thead>
+			<tr>
+				<th class="number"><span> No </span> </th>
+				<th> <input type="checkbox" class="checkall" /></th>
+				
+				<?php foreach($tableGrid as $t): ?>
+					<?php if($t['view'] =='1'): ?>				
+						<?php $limited = isset($t['limited']) ? $t['limited'] :''; ?>
+						<?php if(SiteHelpers::filterColumn($limited )): ?>
+						
+							<th><span><?php echo e($t['label']); ?></span></th>			
+						<?php endif; ?> 
+					<?php endif; ?>
+				<?php endforeach; ?>
+				<th width="70" ><span><?php echo e(Lang::get('core.btn_action')); ?></span></th>
+			  </tr>
+        </thead>
+
+        <tbody>        						
+            <?php foreach($rowData as $row): ?>
+                <tr>
+					<td width="30"> <?php echo e(++$i); ?> </td>
+					<td width="50"><input type="checkbox" class="ids" name="ids[]" value="<?php echo e($row->id); ?>" />  </td>									
+				 <?php foreach($tableGrid as $field): ?>
+					 <?php if($field['view'] =='1'): ?>
+					 	<?php $limited = isset($field['limited']) ? $field['limited'] :''; ?>
+					 	<?php if(SiteHelpers::filterColumn($limited )): ?>
+						 <td>	
+						 	<?php if($field['field'] =='note'): ?>
+						 	<h5> <a href=""> <?php echo e($row->title); ?></a> </h5>
+						 	<?php endif; ?>			 
+						 	<?php echo SiteHelpers::formatRows($row->{$field['field']},$field ,$row ); ?>						 
+						 </td>
+						<?php endif; ?>	
+					 <?php endif; ?>					 
+				 <?php endforeach; ?>
+				 <td>
+					 	<?php if($access['is_detail'] ==1): ?>
+						<a href="<?php echo e(URL::to('notification/show/'.$row->id.'?return='.$return)); ?>" class="tips btn btn-xs btn-primary" title="<?php echo e(Lang::get('core.btn_view')); ?>"><i class="fa  fa-search "></i></a>
+						<?php endif; ?>
+						<?php if($access['is_edit'] ==1): ?>
+						<a  href="<?php echo e(URL::to('notification/update/'.$row->id.'?return='.$return)); ?>" class="tips btn btn-xs btn-success" title="<?php echo e(Lang::get('core.btn_edit')); ?>"><i class="fa fa-edit "></i></a>
+						<?php endif; ?>
+												
+					
+				</td>				 
+                </tr>
+				
+            <?php endforeach; ?>
+              
+        </tbody>
+      
+    </table>
+	<input type="hidden" name="md" value="" />
+	</div>
+	<?php echo Form::close(); ?>
+
+	<?php echo $__env->make('footer', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+	</div>
+</div>	
+	</div>	  
+</div>	
+<script>
+$(document).ready(function(){
+
+	$('.do-quick-search').click(function(){
+		$('#SximoTable').attr('action','<?php echo e(URL::to("notification/multisearch")); ?>');
+		$('#SximoTable').submit();
+	});
+	
+});	
+</script>		
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -1,0 +1,18 @@
+<?php
+
+$tabs = array(
+		'' 		        => '<i class="icon-info2"></i> '. Lang::get('core.tab_siteinfo'),
+		'email'			=> '<i class="icon-envelop"></i> '. Lang::get('core.tab_email'),
+		'security'		=> '<i class="icon-switch"></i> '. Lang::get('core.tab_loginsecurity') ,
+		'translation'	=>'<i class="icon-flag"></i> Translation',
+		'log'			=>'<i class="icon-remove3"></i> '. Lang::get('Clear Cache & Logs')
+	);
+
+?>
+
+<ul class="nav nav-tabs" >
+<?php foreach($tabs as $key=>$val): ?>
+	<li  <?php if($key == $active): ?> class="active" <?php endif; ?>><a href="<?php echo e(URL::to('sximo/config/'.$key)); ?>"> <?php echo $val; ?>  </a></li>
+<?php endforeach; ?>
+
+</ul>

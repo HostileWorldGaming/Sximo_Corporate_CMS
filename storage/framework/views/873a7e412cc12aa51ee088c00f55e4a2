@@ -1,0 +1,48 @@
+   <?php echo Form::open(array('url'=>'faqs/item', 'class'=>'form-vertical','files' => true , 'parsley-validate'=>'','novalidate'=>' ' ,'id'=>'formpost'
+  )); ?>
+
+
+    <div class="form-group  " >
+      <label for="Topic" class=" control-label text-left"> Section  </label>
+      <select name="sectionID" required="true" class="form-control">
+      		<option value=""> -- Select Section </option>
+      		<?php foreach($section as $sec): ?>
+      		<option value="<?php echo e($sec->sectionID); ?>" <?php if($sec->sectionID == $row->sectionID): ?> selected <?php endif; ?> ><?php echo e($sec->title); ?></option>
+      		<?php endforeach; ?>
+      </select>
+    </div> 
+
+    <div class="form-group  " >
+      <label for="Topic" class=" control-label text-left"> Question  </label>
+      <?php echo Form::text('question', $row->question ,array('class'=>'form-control', 'placeholder'=>' ','required'=>'true'   )); ?> 
+
+    </div> 
+
+    <div class="form-group  " >
+      <div for="Topic" class=" control-label text-left"> Answer  </div>
+       <textarea name="answer" rows="15" class="form-control" required="true"><?php echo e($row->answer); ?></textarea>
+    </div>
+    <div class="form-group  " >
+      <label for="Topic" class=" control-label text-left"> OrderList  </label>
+      <?php echo Form::text('ordering', $row->ordering ,array('class'=>'form-control', 'placeholder'=>' ','required'=>'true'   )); ?> 
+
+    </div> 
+
+  
+    <div class="form-group  " >
+      <button class="btn btn-primary"> Submit</button>
+       <button class="btn btn-danger closeItem" type="button"> Cancel </button>
+       
+    </div>  
+  <input type="hidden" name="faqID" value="<?php echo e($row->faqID); ?>">
+  <input type="hidden" name="id" value="<?php echo e($row->id); ?>">
+  <?php echo Form::close(); ?>
+
+
+
+    <script language="javascript">
+    jQuery(document).ready(function($)  {
+    
+       $('#formpost').parsley();
+    });
+    </script>    

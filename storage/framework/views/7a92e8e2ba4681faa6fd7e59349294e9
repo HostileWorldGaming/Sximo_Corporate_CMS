@@ -1,0 +1,185 @@
+<?php $__env->startSection('content'); ?>
+<?php
+use \App\Http\Controllers\SprojectController;
+?>
+<?php /**/ usort($tableGrid, "SiteHelpers::_sort") /**/ ?>
+  <div class="page-content row">
+
+	
+	<div class="page-content-wrapper m-t">	 	
+
+
+<div class="sbox">
+	
+	<div class="sbox-title">
+		<div class="sbox-tools pull-left" >
+			<?php if($access['is_add'] ==1): ?>
+	   		<a href="<?php echo e(URL::to('sproject/update?return='.$return)); ?>" class="tips btn btn-xs btn-default"  title="<?php echo e(Lang::get('core.btn_create')); ?>">
+			<i class="fa  fa-plus "></i></a>
+			<?php endif; ?>  
+			<?php if($access['is_remove'] ==1): ?>
+			<a href="javascript://ajax"  onclick="SximoDelete();" class="tips btn btn-xs btn-default" title="<?php echo e(Lang::get('core.btn_remove')); ?>">
+			<i class="fa fa-trash-o"></i></a>
+			<?php endif; ?> 
+			<a href="<?php echo e(URL::to( 'sproject/search?return='.$return)); ?>" class="btn btn-xs btn-default" onclick="SximoModal(this.href,'Advance Search'); return false;" title="<?php echo e(Lang::get('core.btn_search')); ?>"><i class="fa  fa-search"></i> </a>				
+		</div>
+
+		<div class="sbox-tools" >
+			<?php if($access['is_excel'] ==1): ?>
+			<a href="<?php echo e(URL::to('sproject/download?return='.$return)); ?>" class="tips btn btn-xs btn-default" title="<?php echo e(Lang::get('core.btn_download')); ?>">
+			<i class="fa fa-cloud-download"></i></a>
+			<?php endif; ?>
+
+			<a href="<?php echo e(url($pageModule)); ?>" class=" tips btn btn-xs btn-default"  title="<?php echo e(Lang::get('core.btn_clearsearch')); ?>" ><i class="fa fa-spinner"></i>  </a>		
+			<?php if(Session::get('gid') ==1): ?>
+				<a href="<?php echo e(URL::to('sximo/module/config/'.$pageModule)); ?>" class="tips btn btn-xs btn-default" title=" <?php echo e(Lang::get('core.btn_config')); ?>" ><i class="fa  fa-ellipsis-v"></i></a>
+			<?php endif; ?> 
+		</div> 
+	</div>
+	<div class="sbox-content"> 	
+<section class="ribon-sximo"> 
+	<div class="row m-l-none m-r-none m-t  white-bg shortcut ribon "  >
+		<div class="col-sm-6 col-md-3  p-sm ribon-module">
+			<span class="pull-left m-r-sm "><i class="icon-folder-plus2"></i></span> 
+			<a href="#" class="clear">
+				<span class="h3 block m-t-xs"><strong>  Open ( <?php echo e($pS->Opened); ?> )  </strong>
+				</span>  Opened Projects - <?php echo e(($pS->Opened*100)/$pS->Total); ?>% </small>
+			</a>
+		</div>
+		<div class="col-sm-6 col-md-3   p-sm ribon-setting">
+			<span class="pull-left m-r-sm">	<i class="icon-folder8"></i></span>
+			<a href="#" class="clear">
+				<span class="h3 block m-t-xs"><strong> Closed ( <?php echo e($pS->Closed); ?>  ) </strong>
+				</span> <small >   Closed Projects  - <?php echo e(($pS->Closed*100)/$pS->Total); ?>%   </small> 
+			</a>
+		</div>
+		<div class="col-sm-6 col-md-3   p-sm ribon-module">
+			<span class="pull-left m-r-sm  ">	<i class="icon-folder-minus2"></i></span>
+			<a href="#" class="clear">
+			<span class="h3 block m-t-xs"><strong>  Suspended ( <?php echo e($pS->Suspended); ?> )  </strong></span>
+			<small>  Supended Projects  - <?php echo e(($pS->Suspended*100)/$pS->Total); ?>%   </small> </a>
+		</div>
+		<div class="col-sm-6 col-md-3  p-sm ribon-users">
+			<span class="pull-left m-r-sm ">	<i class="icon-folder-remove"></i></span>
+			<a href="#" class="clear">
+			<span class="h3 block m-t-xs"><strong> Canceled (  <?php echo e($pS->Canceled); ?> ) </strong>
+			</span> <small >  Canceled Projects  - <?php echo e(($pS->Canceled*100)/$pS->Total); ?>%  </small> </a>
+		</div>
+	</div> 
+</section>
+
+<ul class="nav nav-tabs" style="margin-bottom:10px;" >
+   <li class=" pull-right"><a href="<?php echo e(url('sclient')); ?>"><i class="icon-users"></i>All Clients </a></li> 
+   <li class=" pull-right"><a href="<?php echo e(url('stask')); ?>"><i class="icon-pencil"></i> All Tasks </a></li>
+   <li class="active pull-right"><a href="<?php echo e(url('sproject')); ?>" ><i class="icon-stats-up"></i>All Projects </a></li>
+</ul> 
+ 
+ 
+
+
+
+	 <?php echo (isset($search_map) ? $search_map : ''); ?>
+
+	
+	 <?php echo Form::open(array('url'=>'sproject/delete/', 'class'=>'form-horizontal' ,'id' =>'SximoTable' )); ?>
+
+	 <div class="table-responsive" style="min-height:300px;">
+    <table class="table table-striped ">
+        <thead>
+			<tr>
+				<th class="number"><span> No </span> </th>
+				<th> <input type="checkbox" class="checkall" /></th>
+				
+				<?php foreach($tableGrid as $t): ?>
+					<?php if($t['view'] =='1'): ?>				
+						<?php $limited = isset($t['limited']) ? $t['limited'] :''; ?>
+						<?php if(SiteHelpers::filterColumn($limited )): ?>
+							<?php if($t['field'] =='Teams'): ?>
+							<th width="150" class="text-right"><span> <?php echo e($t['field']); ?> </span></th>
+							<?php else: ?>
+							<th><span><?php echo e($t['label']); ?></span></th>			
+							<?php endif; ?>
+						<?php endif; ?> 
+					<?php endif; ?>
+				<?php endforeach; ?>
+				<th width="70" ><span><?php echo e(Lang::get('core.btn_action')); ?></span></th>
+			  </tr>
+        </thead>
+
+        <tbody>        						
+            <?php foreach($rowData as $row): ?>
+                <tr>
+					<td width="30"> <?php echo e(++$i); ?> </td>
+					<td width="50"><input type="checkbox" class="ids" name="ids[]" value="<?php echo e($row->ProjectID); ?>" />  </td>									
+				 <?php foreach($tableGrid as $field): ?>
+					 <?php if($field['view'] =='1'): ?>
+					 	<?php $limited = isset($field['limited']) ? $field['limited'] :''; ?>
+					 	<?php if(SiteHelpers::filterColumn($limited )): ?>
+						 <td>
+						 <?php if($field['field'] =='ProjectName'): ?>
+						 	<?php echo e($row->ProjectName); ?> <br />
+						 	<small><b>Created : <?php echo e(date("d.m.Y",strtotime($row->Created ))); ?></b> </small>
+						 <?php elseif($field['field'] =='Status'): ?>
+							 <?php echo SprojectController::Status($row->Status); ?>
+
+						 <?php elseif($field['field'] =='Tasks'): ?>
+							 <a href="<?php echo e(url('stask?search=ProjectID:equal:'.$row->ProjectID)); ?>" class="btn btn-success"> <?php echo $row->Tasks; ?> </a>	 
+						 <?php elseif($field['field'] =='Teams'): ?>
+						 	<div class="text-right"> 
+						 		<?php echo SprojectController::showTeam($row->Teams); ?>
+
+						 	</div>	
+						 <?php elseif($field['field'] =='Progress'): ?>
+					 		<small>Completion with: <?php echo e($row->Progress); ?>%</small>
+					 		<div class="progress progress-mini">
+                                <div class="progress-bar" style="width: <?php echo e($row->Progress); ?>%;"></div>
+                            </div>
+						 <?php else: ?>		 
+						 	<?php echo SiteHelpers::formatRows($row->{$field['field']},$field ,$row ); ?>						 
+						 <?php endif; ?>
+						 </td>
+						<?php endif; ?>	
+					 <?php endif; ?>					 
+				 <?php endforeach; ?>
+				 <td>
+					 	<?php if($access['is_detail'] ==1): ?>
+						<a href="<?php echo e(URL::to('sproject/show/'.$row->ProjectID.'?return='.$return)); ?>" class="tips btn btn-xs btn-primary" title="<?php echo e(Lang::get('core.btn_view')); ?>"><i class="fa  fa-search "></i></a>
+						<?php endif; ?>
+						<?php if($access['is_edit'] ==1): ?>
+						<a  href="<?php echo e(URL::to('sproject/update/'.$row->ProjectID.'?return='.$return)); ?>" class="tips btn btn-xs btn-success" title="<?php echo e(Lang::get('core.btn_edit')); ?>"><i class="fa fa-edit "></i></a>
+						<?php endif; ?>
+												
+					
+				</td>				 
+                </tr>
+				
+            <?php endforeach; ?>
+              
+        </tbody>
+      
+    </table>
+	<input type="hidden" name="md" value="" />
+	</div>
+	<?php echo Form::close(); ?>
+
+	<?php echo $__env->make('footer', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+	</div>
+</div>	
+	</div>	  
+</div>	
+<style type="text/css">
+		.table tbody tr td{ padding-top:10px; line-height: 20px; padding-bottom: 10px;  }
+
+</style>
+<script>
+$(document).ready(function(){
+
+	$('.do-quick-search').click(function(){
+		$('#SximoTable').attr('action','<?php echo e(URL::to("sproject/multisearch")); ?>');
+		$('#SximoTable').submit();
+	});
+	
+});	
+</script>		
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

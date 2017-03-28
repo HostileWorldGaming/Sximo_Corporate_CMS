@@ -1,0 +1,73 @@
+<?php $__env->startSection('content'); ?>
+<?php /**/ usort($tableGrid, "SiteHelpers::_sort") /**/ ?>
+  <div class="page-content row">
+	
+	
+	<div class="page-content-wrapper m-t">	 	
+
+<div class="sbox animated fadeInRight">
+	<div class="sbox-title">
+		 <h3><i class="icon-bars"></i>  <?php echo e($pageTitle); ?> <small><?php echo e($pageNote); ?></small></h3>
+
+<div class="sbox-tools" >
+		<?php if($access['is_excel'] ==1): ?>
+			<a href="<?php echo e(URL::to('monthlysales/download')); ?>" class="tips btn btn-sm btn-white" title="<?php echo e(Lang::get('core.btn_download')); ?>">
+			<i class="fa fa-cloud-download"></i></a>
+			<?php endif; ?>
+		<?php if(Session::get('gid') ==1): ?>
+			<a href="<?php echo e(URL::to('sximo/module/config/'.$pageModule)); ?>" class="btn btn-xs btn-white tips" title=" <?php echo e(Lang::get('core.btn_config')); ?>" ><i class="fa fa-ellipsis-v"></i></a>
+		<?php endif; ?> 
+		</div>
+	</div>
+	<div class="sbox-content"> 	
+	
+	
+	 <?php echo Form::open(array('url'=>'monthlysales/delete/', 'class'=>'form-horizontal' ,'id' =>'SximoTable' )); ?>
+
+	 <div class="table-responsive" style="min-height:300px;">
+    <table class="table table-striped ">
+        <thead>
+			<tr>
+				<th class="number"> No </th>			
+				<?php foreach($tableGrid as $t): ?>
+					<?php if($t['view'] =='1'): ?>
+						<th><?php echo e($t['label']); ?></th>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			  </tr>
+        </thead>
+
+        <tbody>
+						
+            <?php foreach($rowData as $row): ?>
+                <tr>
+					<td width="30"> <?php echo e(++$i); ?> </td>	
+				<?php foreach($tableGrid as $field): ?>
+					 <?php if($field['view'] =='1'): ?>
+					 	<?php $limited = isset($field['limited']) ? $field['limited'] :''; ?>
+					 	<?php if(SiteHelpers::filterColumn($limited )): ?>
+						 <td>					 
+						 	<?php echo SiteHelpers::formatRows($row->{$field['field']},$field ,$row ); ?>						 
+						 </td>
+						<?php endif; ?>	
+					 <?php endif; ?>					 
+				 <?php endforeach; ?>				 
+				
+                </tr>
+				
+            <?php endforeach; ?>
+              
+        </tbody>
+      
+    </table>
+	<input type="hidden" name="md" value="" />
+	</div>
+	<?php echo Form::close(); ?>
+
+	<?php echo $__env->make('footer', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+	</div>
+</div>	
+	</div>	  
+</div>	
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

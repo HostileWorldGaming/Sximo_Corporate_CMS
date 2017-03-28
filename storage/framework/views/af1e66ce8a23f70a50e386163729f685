@@ -1,0 +1,109 @@
+<?php $__env->startSection('content'); ?>
+
+  <div class="page-content row">
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-title">
+        <h3> Translation   <small> Manage Language Translation </small></h3>
+      </div>
+
+      <ul class="breadcrumb">
+        <li><a href="<?php echo e(URL::to('dashboard')); ?>"><?php echo e(Lang::get('core.home')); ?></a></li>
+		<li><a href="<?php echo e(URL::to('config')); ?>"> Error Logs </a></li>
+      </ul>
+	</div> 	  
+
+
+ 	<div class="page-content-wrapper m-t">  
+ 	<?php echo $__env->make('sximo.config.tab',array('active'=>'translation'), array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+	<?php if(Session::has('message')): ?>
+	  
+		   <?php echo e(Session::get('message')); ?>
+
+	   
+	<?php endif; ?>
+	<ul class="parsley-error-list">
+		<?php foreach($errors->all() as $error): ?>
+			<li><?php echo e($error); ?></li>
+		<?php endforeach; ?>
+	</ul>		
+
+	 
+<div class="tab-content m-t ">
+		<div class="sbox   animated fadeInUp"> 
+			<div class="sbox-title"> Languange Manager </div>
+			<div class="sbox-content"> 
+
+	<div class="col-sm-8">
+	
+		<h4> Languange Manager </h4>
+		<hr />
+		<ul class="nav nav-tabs" >
+		<?php foreach($files as $f): ?>
+			<?php if($f != "." and $f != ".." and $f != 'info.json'): ?>
+			<li <?php if($file == $f): ?> class="active" <?php endif; ?>  >
+			<a href="<?php echo e(URL::to('sximo/config/translation?edit='.$lang.'&file='.$f)); ?>"><?php echo e($f); ?> </a></li>
+			<?php endif; ?>
+		<?php endforeach; ?>
+		</ul>
+		<hr />
+		 <?php echo Form::open(array('url'=>'sximo/config/savetranslation/', 'class'=>'form-vertical ')); ?>
+
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th> Pharse </th>
+					<th> Translation </th>
+
+				</tr>
+			</thead>
+			<tbody>	
+				
+				<?php foreach($stringLang as $key => $val) : 
+					if(!is_array($val)) 
+					{
+					?>
+					<tr>	
+						<td><?php echo $key ;?></td>
+						<td><input type="text" name="<?php echo $key ;?>" value="<?php echo $val ;?>" class="form-control" />
+						
+						</td>
+					</tr>
+					<?php 
+					} else {
+						foreach($val as $k=>$v)
+						{ ?>
+							<tr>	
+								<td><?php echo $key .' - '.$k ;?></td>
+								<td><input type="text" name="<?php echo $key ;?>[<?php echo $k ;?>]" value="<?php echo $v ;?>" class="form-control" />
+								
+								</td>
+							</tr>						
+						<?php }
+					}
+				endforeach; ?>
+			</tbody>
+			
+		</table>
+		<input type="hidden" name="lang" value="<?php echo e($lang); ?>"  />
+		<input type="hidden" name="file" value="<?php echo e($file); ?>"  />
+		<button type="submit" class="btn btn-info"> Save Translation</button>
+		<?php echo Form::close(); ?>
+
+
+	</div> 
+	
+	
+	<div class="clr"></div>
+	</div>
+
+</div>
+</div></div></div>
+
+
+
+
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

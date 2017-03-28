@@ -1,0 +1,10 @@
+{
+	"name"		:"Default",
+	"folder"	:"default",
+	"author"	:"Mango TM",
+	"template"	:{
+					"Full Page"			: "fullpage",
+					"Left Sidebar"		: "pagesidebar",
+					"Backend Template"	: "backend"
+				}
+}

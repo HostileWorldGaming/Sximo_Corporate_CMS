@@ -1,0 +1,222 @@
+<?php $__env->startSection('content'); ?>
+<?php /**/ usort($tableGrid, "SiteHelpers::_sort") /**/ ?>
+  <div class="page-content row">
+
+	
+	<div class="page-content-wrapper m-t">	 	
+		<ul class="nav nav-tabs " >
+		  <li class="active"><a href="#info" data-toggle="tab"><i class="fa  fa-info-circle"></i> All Posts </a></li>
+		  <li ><a href="#config" data-toggle="tab"><i class="fa fa-cog"></i>Post Setting </a></li>
+		</ul>
+
+	<div class="tab-content">
+		  <div class="tab-pane active m-t" id="info">
+
+
+
+				<div class="sbox m-t">
+				<div class="sbox-title">
+					<div class="sbox-tools pull-left" >
+						<?php if($access['is_add'] ==1): ?>
+				   		<a href="<?php echo e(URL::to('core/posts/update?return='.$return)); ?>" class="tips btn btn-xs btn-default"  title="<?php echo e(Lang::get('core.btn_create')); ?>">
+						<i class="fa  fa-plus "></i></a>
+						<?php endif; ?>  
+						<?php if($access['is_remove'] ==1): ?>
+						<a href="javascript://ajax"  onclick="SximoDelete();" class="tips btn btn-xs btn-default" title="<?php echo e(Lang::get('core.btn_remove')); ?>">
+						<i class="fa fa-trash-o"></i></a>
+						<?php endif; ?> 
+						<a href="<?php echo e(URL::to( 'core/posts/search')); ?>" class="btn btn-xs btn-default" onclick="SximoModal(this.href,'Advance Search'); return false;" title="<?php echo e(Lang::get('core.btn_search')); ?>"><i class="fa  fa-search"></i> </a>	
+						<span class="label label-warning"> Beta Version <sup>1.0</sup></span>	
+							
+
+
+					</div>
+
+					<div class="sbox-tools" >
+						<?php if($access['is_excel'] ==1): ?>
+						<a href="<?php echo e(URL::to('core/posts/download?return='.$return)); ?>" class="tips btn btn-xs btn-default" title="<?php echo e(Lang::get('core.btn_download')); ?>">
+						<i class="fa fa-cloud-download"></i></a>
+						<?php endif; ?>
+
+						<a href="<?php echo e(url($pageModule)); ?>" class=" tips btn btn-xs btn-default"  title="<?php echo e(Lang::get('core.btn_clearsearch')); ?>" ><i class="fa fa-spinner"></i>  </a>		
+						<?php if(Session::get('gid') ==1): ?>
+							<a href="<?php echo e(URL::to('sximo/module/config/'.$pageModule)); ?>" class="tips btn btn-xs btn-default" title=" <?php echo e(Lang::get('core.btn_config')); ?>" ><i class="fa  fa-ellipsis-v"></i></a>
+						<?php endif; ?> 
+
+					</div>
+				</div>
+
+				<div class="sbox-content"> 	
+
+
+				 <?php echo (isset($search_map) ? $search_map : ''); ?>
+
+				
+				 <?php echo Form::open(array('url'=>'core/posts/delete/0?return='.$return, 'class'=>'form-horizontal' ,'id' =>'SximoTable' )); ?>
+
+				 <div class="table-responsive" style="min-height:300px;  padding-bottom:60px;">
+			    <table class="table table-striped ">
+			        <thead>
+						<tr>
+							<th class="number"><span> No </span> </th>
+							<th> <input type="checkbox" class="checkall" /></th>
+							<th ><span><?php echo e(Lang::get('core.btn_action')); ?></span></th>
+							
+							<?php foreach($tableGrid as $t): ?>
+								<?php if($t['view'] =='1'): ?>				
+									<?php $limited = isset($t['limited']) ? $t['limited'] :''; ?>
+									<?php if(SiteHelpers::filterColumn($limited )): ?>
+									
+										<th><span><?php echo e($t['label']); ?></span></th>			
+									<?php endif; ?> 
+								<?php endif; ?>
+							<?php endforeach; ?>
+							
+						  </tr>
+			        </thead>
+
+			        <tbody>        						
+			            <?php foreach($rowData as $row): ?>
+			                <tr>
+								<td width="30"> <?php echo e(++$i); ?> </td>
+								<td width="50"><input type="checkbox" class="ids" name="ids[]" value="<?php echo e($row->pageID); ?>" />  </td>	
+								<td>
+								 	<div class="dropdown">
+									  <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown"> <i class="fa fa-cog"></i>
+									  <span class="caret"></span></button>
+									  <ul class="dropdown-menu">
+									 	<?php if($access['is_detail'] ==1): ?>
+										<li><a href="<?php echo e(URL::to('core/posts/show/'.$row->pageID.'?return='.$return)); ?>" class="tips" title="<?php echo e(Lang::get('core.btn_view')); ?>"><i class="fa  fa-search "></i> <?php echo e(Lang::get('core.btn_view')); ?> </a></li>
+										<?php endif; ?>
+										<?php if($access['is_edit'] ==1): ?>
+										<li><a  href="<?php echo e(URL::to('core/posts/update/'.$row->pageID.'?return='.$return)); ?>" class="tips" title="<?php echo e(Lang::get('core.btn_edit')); ?>"><i class="fa fa-edit "></i> <?php echo e(Lang::get('core.btn_edit')); ?> </a></li>
+										<?php endif; ?>
+									  </ul>
+									</div>
+
+								</td>
+
+							 <?php foreach($tableGrid as $field): ?>
+								 <?php if($field['view'] =='1'): ?>
+								 	<?php $limited = isset($field['limited']) ? $field['limited'] :''; ?>
+								 	<?php if(SiteHelpers::filterColumn($limited )): ?>
+									 <td>	
+								 	<?php if($field['field'] =='status'): ?>
+								 		<?php echo $row->status == 'enable' ? '<i class="text-success fa fa-check-circle"></i>' : '<i class="text-danger fa fa-minus-circle"></i>'; ?>
+
+
+								 	<?php else: ?> 						 				 
+									 	<?php echo SiteHelpers::formatRows($row->{$field['field']},$field ,$row ); ?>
+
+									<?php endif; ?> 							 
+									 </td>
+									<?php endif; ?>	
+								 <?php endif; ?>					 
+							 <?php endforeach; ?>		 
+			                </tr>
+							
+			            <?php endforeach; ?>
+			              
+			        </tbody>
+			      
+			    </table>
+				<input type="hidden" name="md" value="" />
+				</div>
+				<?php echo Form::close(); ?>
+
+				<?php echo $__env->make('footer', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+				</div>
+			</div>	
+		
+
+		  </div>
+
+		   <div class="tab-pane m-t" id="config">
+
+			<div class="sbox m-t">
+				<div class="sbox-title"><h4><i class="icon-cog2"></i> Post Configuration</h4> </div>
+				<div class="sbox-content"> 
+
+				<?php echo Form::open(array('url'=>'core/posts/config', 'class'=>'form-horizontal' ,'id' =>'' )); ?>
+
+				 <div class="form-group  " >
+						<label class="col-md-4" > Allow Comment system    </label>
+						<div class="col-md-8">									
+					  		<input type="checkbox" name="commsys" class="checkbox" value="1"
+					  		<?php if($conpost['commsys'] ==1): ?> checked <?php endif; ?>
+					  		 />	
+					  	</div>					
+				  </div> 
+				 <div class="form-group  " >
+						<label class="col-md-4" > Display Image in every post(s)   </label>	
+						<div class="col-md-8">								
+					  		<input type="checkbox" name="commimage" class="checkbox" value="1"
+					  		<?php if($conpost['commimage'] ==1): ?> checked <?php endif; ?>
+					  		 />
+					  	</div>						
+				  </div> 
+				 <div class="form-group  " >
+						<label class="col-md-4" > Display Latest post(s)   </label>	
+						<div class="col-md-8">								
+					  		<input type="checkbox" name="commlatest" class="checkbox" value="1"
+					  		<?php if($conpost['commlatest'] ==1): ?> checked <?php endif; ?>
+					  		 />
+					  	</div>						
+				  </div>
+
+				 <div class="form-group  " >
+						<label class="col-md-4" > Display Popular post(s)   </label>	
+						<div class="col-md-8">								
+					  		<input type="checkbox" name="commpopular" class="checkbox" value="1" 
+					  		<?php if($conpost['commpopular'] ==1): ?> checked <?php endif; ?>
+					  		/>
+					  	</div>						
+				  </div>				  
+
+				 <div class="form-group  " >
+						<label class="col-md-4" > Allow Share post(s) :    </label>	
+						<div class="col-md-8">								
+					  		<input type="checkbox" name="commshare" class="checkbox" value="1" 
+					  		<?php if($conpost['commshare'] ==1): ?> checked <?php endif; ?>
+					  		/>
+					  	</div>							
+				  </div> 
+				 <div class="form-group  " >
+						<label class="col-md-4" > Share post(s) API KEY :    </label>	
+						<div class="col-md-8">								
+					  		<input type="text" name="commshareapi" class="form-control" value="<?php echo e($conpost['commshareapi']); ?>"  />
+
+					  		Get your own API : <a href="http://www.sharethis.com/get-sharing-tools/" target="_blank"> http://www.sharethis.com/get-sharing-tools/ </a>
+					  	</div>							
+				  </div> 	  	  	
+
+				 <div class="form-group  " >
+						<label class="col-md-4" > Display post(s) per/page  </label>
+						<div class="col-md-8">									
+					  		<input type="text" name="commperpage" class="form-control" style="width: 50px;" value="<?php echo e($conpost['commperpage']); ?>" />
+					  	</div>							
+				  </div> 
+				 <div class="form-group  " >
+						<label class="col-md-4" >   </label>
+						<div class="col-md-8">									
+					  		<button type="submit" class="btn btn-primary"> Save Configuration </button>
+					  	</div>							
+				  </div> 
+
+				  <?php echo Form::close(); ?>
+
+			</div>	
+			</div>  
+
+
+		</div>
+	</div>  
+</div>	
+
+</div>
+<style type="text/css">
+	.table i { font-size: 16px; }
+</style>
+	
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

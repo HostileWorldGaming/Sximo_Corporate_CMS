@@ -1,0 +1,119 @@
+<div class="sbox">
+	<div class="sbox-title"> <h4> <?php echo e($pageTitle); ?> : <small><?php echo e($pageNote); ?></small></h4></div>
+	<div class="sbox-content">
+
+<div class="table-responsive" style="min-height:300px;">
+    <table class="table table ">
+        <thead>
+			<tr>
+					
+				<th></th>
+				<?php foreach($tableGrid as $t): ?>
+					<?php if($t['view'] =='1'): ?>				
+						<?php $limited = isset($t['limited']) ? $t['limited'] :''; ?>
+						<?php if(SiteHelpers::filterColumn($limited )): ?>
+						
+							<th><?php echo e($t['label']); ?></th>			
+						<?php endif; ?> 
+					<?php endif; ?>
+				<?php endforeach; ?>
+				
+			  </tr>
+        </thead>
+
+        <tbody>    
+        <?php $i = 0; ?>    						
+            <?php foreach($rowData as $row): ?>
+            <?php $ids = ++$i; ?>
+                <tr>
+					<td><a href="javascript:void(0)" class="expandable-child-<?php echo e($key); ?>-<?php echo e($id); ?>" rel="#row-<?php echo e($key); ?>-<?php echo e($row->{$key}); ?>" 
+					data-url=""
+					><i class="fa fa-plus " ></i></a></td>	
+													
+				 <?php foreach($tableGrid as $field): ?>
+					 <?php if($field['view'] =='1'): ?>
+					 	<?php $limited = isset($field['limited']) ? $field['limited'] :''; ?>
+					 	<?php if(SiteHelpers::filterColumn($limited )): ?>
+						 <td>					 
+						 	<?php echo SiteHelpers::formatRows($row->{$field['field']},$field,$row); ?>						 
+						 </td>
+						<?php endif; ?>	
+					 <?php endif; ?>					 
+				 <?php endforeach; ?>
+				 			 
+                </tr>
+				
+            
+            <tr style="display:none" class="expanded" id="row-<?php echo e($key); ?>-<?php echo e($row->{$key}); ?>">
+                	<td></td>
+                	<td colspan="<?php echo e($colspan); ?>" class="data">
+                		<table class="table table-striped">
+                			<thead>
+                				<tr>
+                					<th> Label </th>
+                					<th> Value </th>
+                				</tr>
+                			</thead>
+                			<tbody>
+                			 <?php foreach($tableGrid as $field): ?>
+					 			<?php if($field['detail'] =='1'): ?>
+					 			<tr>
+					 				<td width="20%"> <?php echo e($field['label']); ?> </td>
+					 				<td> : 					 
+						 				<?php echo SiteHelpers::formatRows($row->{$field['field']},$field,$row); ?>						 
+						 			</td>
+						 		</tr>	
+					 			<?php endif; ?>
+					 		<?php endforeach; ?>	
+					 		</tbody>
+                		</table>
+
+
+                	</td>
+                	
+                </tr>
+            <?php endforeach; ?>    
+              
+        </tbody>
+      
+    </table>
+	<input type="hidden" name="md" value="" />
+	</div>
+	</div>
+</div>	
+
+<script type="text/javascript">
+
+$('.expandable-child-<?php echo e($key); ?>-<?php echo e($id); ?>').click(function(){
+
+		var id = $(this).attr('rel');
+		selector =  id +" .data";
+		if($(selector).is(':empty'))
+		{
+			$(id).show();
+			$(this).removeClass('expandable'); $(this).addClass('collapseable'); 
+			var url = $(this).attr('data-url');
+			//$('.expanded').hide();
+			$.get( url , function(data){
+				$(selector).html(data);			
+				
+			})
+			$(this).html('<i class="fa fa-minus"></i>');
+			$(this).addClass('open');
+		} else {
+			if($(this).hasClass('open'))
+			{
+				$(this).html('<i class="fa fa-plus"></i>');
+				$(this).removeClass('open');
+				$(id).hide();
+			} else {
+				$(this).html('<i class="fa fa-minus"></i>');
+				$(this).addClass('open');
+
+				$(id).show();
+			}
+			
+		}	
+	});	
+
+</script>

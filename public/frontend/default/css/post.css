@@ -1,0 +1,9 @@
+	.posts {  }
+	.posts h3 { margin: 0 0 10px 0; }
+	.posts .info { padding: 10px 0 20px 0; font-size: 12px; }
+	.posts .info i{ font-size: 18px; padding: 0 5px 0 15px;}
+	.posts .labels { padding: 10px 0; }
+	.cloudtags { margin: 0 5px 5px 0; padding: 5px 10px; border: solid 1px #eee; display: block;  }
+	ul.widgeul { margin: 0; padding:0; list-style: none; }
+	ul.widgeul li{ clear: both; padding-bottom: 10px; border-bottom: solid 1px #eee;  }
+	ul.widgeul li .image{ width: 60px; float: left; padding-right: 15px;  }

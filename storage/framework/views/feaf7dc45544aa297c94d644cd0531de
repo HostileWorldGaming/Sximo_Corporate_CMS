@@ -1,0 +1,115 @@
+<?php $__env->startSection('content'); ?>
+<?php /**/ usort($tableGrid, "SiteHelpers::_sort") /**/ ?>
+  <div class="page-content row">
+
+	
+	<div class="page-content-wrapper m-t">	 	
+
+	<div class="sbox">
+	<div class="sbox-title">
+		<div class="sbox-tools pull-left" >
+			<?php if($access['is_add'] ==1): ?>
+	   		<a href="<?php echo e(URL::to('employee/update?return='.$return)); ?>" class="tips btn btn-xs btn-default"  title="<?php echo e(Lang::get('core.btn_create')); ?>">
+			<i class="fa  fa-plus "></i></a>
+			<?php endif; ?>  
+			<?php if($access['is_remove'] ==1): ?>
+			<a href="javascript://ajax"  onclick="SximoDelete();" class="tips btn btn-xs btn-default" title="<?php echo e(Lang::get('core.btn_remove')); ?>">
+			<i class="fa fa-trash-o"></i></a>
+			<?php endif; ?> 
+			<a href="<?php echo e(URL::to( 'employee/search?return='.$return)); ?>" class="btn btn-xs btn-default" onclick="SximoModal(this.href,'Advance Search'); return false;" title="<?php echo e(Lang::get('core.btn_search')); ?>"><i class="fa  fa-search"></i> </a>				
+
+
+		</div>
+
+		<div class="sbox-tools" >
+			<?php if($access['is_excel'] ==1): ?>
+			<a href="<?php echo e(URL::to('employee/download?return='.$return)); ?>" class="tips btn btn-xs btn-default" title="<?php echo e(Lang::get('core.btn_download')); ?>">
+			<i class="fa fa-cloud-download"></i></a>
+			<?php endif; ?>
+
+			<a href="<?php echo e(url($pageModule)); ?>" class=" tips btn btn-xs btn-default"  title="<?php echo e(Lang::get('core.btn_clearsearch')); ?>" ><i class="fa fa-spinner"></i>  </a>		
+			<?php if(Session::get('gid') ==1): ?>
+				<a href="<?php echo e(URL::to('sximo/module/config/'.$pageModule)); ?>" class="tips btn btn-xs btn-default" title=" <?php echo e(Lang::get('core.btn_config')); ?>" ><i class="fa  fa-ellipsis-v"></i></a>
+			<?php endif; ?> 
+		</div>
+	</div>
+
+	<div class="sbox-content"> 	
+	
+
+	 <?php echo (isset($search_map) ? $search_map : ''); ?>
+
+	
+	 <?php echo Form::open(array('url'=>'employee/delete/0?return='.$return, 'class'=>'form-horizontal' ,'id' =>'SximoTable' )); ?>
+
+	 <div class="table-responsive" style="min-height:300px;  padding-bottom:60px;">
+    <table class="table table-striped ">
+        <thead>
+			<tr>
+				<th class="number"><span> No </span> </th>
+				<th> <input type="checkbox" class="checkall" /></th>
+				<th ><span><?php echo e(Lang::get('core.btn_action')); ?></span></th>
+				
+				<?php foreach($tableGrid as $t): ?>
+					<?php if($t['view'] =='1'): ?>				
+						<?php $limited = isset($t['limited']) ? $t['limited'] :''; ?>
+						<?php if(SiteHelpers::filterColumn($limited )): ?>
+						
+							<th><span><?php echo e($t['label']); ?></span></th>			
+						<?php endif; ?> 
+					<?php endif; ?>
+				<?php endforeach; ?>
+				
+			  </tr>
+        </thead>
+
+        <tbody>        						
+            <?php foreach($rowData as $row): ?>
+                <tr>
+					<td width="30"> <?php echo e(++$i); ?> </td>
+					<td width="50"><input type="checkbox" class="ids" name="ids[]" value="<?php echo e($row->employeeNumber); ?>" />  </td>	
+					<td>
+					 	<div class="dropdown">
+						  <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown"> <i class="fa fa-cog"></i>
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						 	<?php if($access['is_detail'] ==1): ?>
+							<li><a href="<?php echo e(URL::to('employee/show/'.$row->employeeNumber.'?return='.$return)); ?>" class="tips" title="<?php echo e(Lang::get('core.btn_view')); ?>"><i class="fa  fa-search "></i> <?php echo e(Lang::get('core.btn_view')); ?> </a></li>
+							<?php endif; ?>
+							<?php if($access['is_edit'] ==1): ?>
+							<li><a  href="<?php echo e(URL::to('employee/update/'.$row->employeeNumber.'?return='.$return)); ?>" class="tips" title="<?php echo e(Lang::get('core.btn_edit')); ?>"><i class="fa fa-edit "></i> <?php echo e(Lang::get('core.btn_edit')); ?> </a></li>
+							<?php endif; ?>
+						  </ul>
+						</div>
+
+					</td>
+
+				 <?php foreach($tableGrid as $field): ?>
+					 <?php if($field['view'] =='1'): ?>
+					 	<?php $limited = isset($field['limited']) ? $field['limited'] :''; ?>
+					 	<?php if(SiteHelpers::filterColumn($limited )): ?>
+						 <td>					 
+						 	<?php echo SiteHelpers::formatRows($row->{$field['field']},$field ,$row ); ?>						 
+						 </td>
+						<?php endif; ?>	
+					 <?php endif; ?>					 
+				 <?php endforeach; ?>		 
+                </tr>
+				
+            <?php endforeach; ?>
+              
+        </tbody>
+      
+    </table>
+	<input type="hidden" name="md" value="" />
+	</div>
+	<?php echo Form::close(); ?>
+
+	<?php echo $__env->make('footer', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+	</div>
+</div>	
+	</div>	  
+</div>	
+	
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

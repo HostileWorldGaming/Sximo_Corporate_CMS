@@ -1,0 +1,139 @@
+<?php $__env->startSection('content'); ?>
+<?php /**/ usort($tableGrid, "SiteHelpers::_sort") /**/ ?>
+  <div class="page-content row">
+    <!-- Page header -->
+
+	
+	
+	<div class="page-content-wrapper m-t">	 	
+
+<div class="sbox animated fadeInRight">
+	<div class="sbox-title"> <h5> <i class="fa fa-comment"></i>  All Forums </h5>
+		<div class="sbox-tools" >
+
+
+			<?php if($access['is_add'] ==1): ?>
+	   		<a href="<?php echo e(URL::to('sximoforum/update')); ?>" class="tips btn btn-xs btn-default"  title="<?php echo e(Lang::get('core.btn_create')); ?>">
+			<i class="fa  fa-plus "></i></a>
+			<?php endif; ?>  
+			<?php if($access['is_remove'] ==1): ?>
+			<a href="javascript://ajax"  onclick="SximoDelete();" class="tips btn btn-xs btn-default" title="<?php echo e(Lang::get('core.btn_remove')); ?>">
+			<i class="fa fa-trash-o"></i></a>
+			<?php endif; ?> 
+			
+			<a href="<?php echo e(url($pageModule)); ?>" class=" tips btn btn-xs btn-default"  title="<?php echo e(Lang::get('core.btn_clearsearch')); ?>" ><i class="fa fa-spinner"></i>  </a>	
+
+			<?php if(Session::get('gid') ==1): ?>
+				<a href="<?php echo e(URL::to('sximo/module/config/'.$pageModule)); ?>" class="tips btn btn-xs btn-default" title=" <?php echo e(Lang::get('core.btn_config')); ?>" ><i class="fa  fa-ellipsis-v"></i></a>
+			<?php endif; ?> 			
+		
+
+
+		</div>
+	</div>
+	<div class="sbox-content"> 	
+		
+		 <?php echo Form::open(array('url'=>'sximoforum/delete/', 'class'=>'form-horizontal' ,'id' =>'SximoTable' )); ?>
+
+
+		<table class="table table-striped table-bordered" >
+        <thead>
+			<tr>
+				<?php if($access['is_remove'] ==1): ?>
+				<th> <input type="checkbox" class="checkall" /></th>
+				<?php endif; ?>
+				<th> Forum </th>
+				<th>  </th>
+				<th> Posts </th>
+				<th> <button class="btn btn-white btn-sm">  <i class="icon-bubbles6"></i> </button> </th>
+				<?php if($access['is_remove'] ==1): ?>
+					<th width="85"><button class="btn btn-white btn-sm"> <i class="icon-cog2"></i></button>  </th>
+				<?php endif; ?>
+
+				
+			</tr>
+		</thead>		
+		<tbody>	
+		<?php foreach($forums as $row): ?>
+			<tr>
+				<?php if($access['is_remove'] ==1): ?>
+					<td><input type="checkbox" class="ids" name="ids[]" value="<?php echo e($row['ForumID']); ?>" /></td>
+				<?php endif; ?>
+				<td colspan="3" > 
+					<h3><?php echo e($row['Name']); ?></h3>
+					<div class="p-t p-b" style="padding: 5px 0 10px;">
+					<?php echo $row['Note']; ?>
+
+					</div>
+				</td>
+				<td></td>
+				<?php if($access['is_edit'] ==1): ?>
+				<td>
+						<a  href="<?php echo e(URL::to('sximoforum/update/'.$row['ForumID'].'?return='.$return)); ?>" class="tips btn btn-xs btn-white" title="<?php echo e(Lang::get('core.btn_edit')); ?>"><i class="fa fa-pencil "></i></a>
+				</td>		
+				<?php endif; ?>
+				
+			</tr>
+			<?php if($access['is_add'] ==1): ?>
+			<tr>
+				<?php if($access['is_remove'] ==1): ?><td></td><?php endif; ?>
+				<td colspan="4">
+				<div style="padding: 10px 0; text-align: right;">
+				<?php if($access['is_add'] ==1): ?>
+					<a href="<?php echo e(url('sximoforum/addtopic/'.$row['ForumID'])); ?>" onclick="SximoModal(this.href,'Create New Post'); return false;" class="btn btn-success btn-xs"><i class="icon-plus-circle2"></i> New <?php echo e($row['Name']); ?>  </a>
+				<?php endif; ?>	
+				</div>	
+				</td>
+				
+				<?php if($access['is_remove'] ==1): ?><td></td><?php endif; ?>
+				
+			</tr>	
+			<?php endif; ?>		
+			<?php foreach($row['categories'] as $cat): ?>
+			<tr>
+				<?php if($access['is_remove'] ==1): ?><td></td><?php endif; ?>
+				<td> <a href="<?php echo url('sximoforum/topic/'.$cat['CategoryID']); ?>"><b><?php echo e($cat['Name']); ?></b> </a></td>
+				<td> <?php echo $cat['Note']; ?></td>
+				<td><a href=""> <?php echo e($cat['Posts']); ?> </a></td>
+				<td> <?php echo e($cat['Comments']); ?></td>
+				
+				<?php if($access['is_remove'] ==1): ?>
+				<td>
+					<a  href="<?php echo e(URL::to('sximoforum/deletetopic/'.$cat['CategoryID'].'?return='.$return)); ?>" class="tips btn btn-xs btn-white" title="<?php echo e(Lang::get('core.btn_edit')); ?>"><i class="icon-remove confirmDelete"></i></a>	
+				</td>
+				<?php endif; ?>
+
+				
+				
+			</tr>
+
+			<?php endforeach; ?>
+
+
+		<?php endforeach; ?> 
+		</tbody>
+		</table>
+
+	
+		<?php echo Form::close(); ?>
+
+
+	 
+	</div>
+</div>	
+	</div>	  
+</div>	
+<script>
+$(document).ready(function(){
+  $('.confirmDelete').click(function(){
+    if(confirm( ' Are u sure delete comment')){
+      return true;
+    } else {
+      return false;
+    }
+    return false;
+  });
+});	
+</script>		
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

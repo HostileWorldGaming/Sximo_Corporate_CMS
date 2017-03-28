@@ -1,0 +1,121 @@
+<?php $__env->startSection('content'); ?>
+<div class="page-content row">
+
+ 	<div class="page-content-wrapper m-t">   
+
+<div class="sbox ">
+	<div class="sbox-title"> 
+		<h5 style="display:block !important"><i class="fa fa-comment"></i> <?php echo e($pageTitle); ?>: <?php echo e($row->name); ?> </h5>
+			<div class="sbox-tools" >
+		   		<a href="<?php echo e(URL::to('faqs?return='.$return)); ?>" class="tips btn btn-sm btn-default " title="<?php echo e(Lang::get('core.btn_back')); ?>"><i class="fa  fa-arrow-left"></i></a>
+				<?php if($access['is_add'] ==1): ?>
+		   		<a href="<?php echo e(URL::to('faqs/update/'.$id.'?return='.$return)); ?>" class="tips btn btn-sm  btn-default" title="<?php echo e(Lang::get('core.btn_edit')); ?>"><i class="fa fa-pencil"></i></a>
+				<?php endif; ?>
+			</div>	 
+	</div>
+	<div class="sbox-content" > 	
+ 
+		<hr />
+	
+
+		<div class="col-md-3">
+			<?php if($access['is_add'] =='1'): ?>
+			<a href="<?php echo e(url('faqs/section/'.$row->faqID)); ?>" onclick="SximoModal(this.href,'New Section'); return false;" class="btn btn-sm btn-white"><i class="icon-plus-circle2"></i>   Section  </a>
+			<hr />
+			<?php endif; ?>
+			<ul class="faqTree">
+			<?php foreach($faqTree as $fs): ?>
+				<li><h4><?php echo e($fs['title']); ?>
+
+
+					<?php if($access['is_remove'] =='1'): ?>
+					<a href="<?php echo e(url('faqs/sectiondelete/'.$row->faqID.'/'.$fs['sectionID'])); ?>"  class="btn-default btn btn-xs pull-right sectionDelete"><i class="fa fa-trash-o"></i></a>
+					<?php endif; ?>
+					<?php if($access['is_edit'] =='1'): ?>
+					<a href="<?php echo e(url('faqs/section/'.$row->faqID.'/'.$fs['sectionID'])); ?>"  onclick="SximoModal(this.href,'Edit Section'); return false;"  class="btn-default btn btn-xs pull-right"><i class="fa fa-pencil"></i></a>
+					<?php endif; ?>	</h4> 				
+				
+					<ul>
+						<?php foreach($fs['items'] as $item): ?>
+						<li><a href="?view=<?php echo e($item->id); ?>"><i class="icon-arrow-right3"></i> <?php echo $item->question; ?></a> </li>
+
+						<?php endforeach; ?>
+
+					</ul>
+					<div class="clear clr"></div>
+				</li>
+			<?php endforeach; ?>
+			</ul>
+		</div>
+		<div class="col-md-9">
+			<div class="text-right">
+			<?php if($access['is_add'] =='1'): ?>
+			<a href="<?php echo e(url('faqs/item/'.$row->faqID.'/0/0')); ?>"  onclick="SximoModal(this.href,'Edit Section'); return false;"  class="btn btn-sm btn-white"><i class="icon-plus-circle2"></i> Add New Item  </a>
+			
+				<?php if(isset($items) && count($items)>=1): ?>
+					<?php $item = $items[0]; ?>
+					<a href="<?php echo e(url('faqs/item/'.$row->faqID.'/'.$item->sectionID.'/'.$item->id)); ?>" onclick="SximoModal(this.href,'Edit Item'); return false;" class="btn btn-sm btn-white "><i class="icon-pencil"></i> Edit Item  </a>
+					<a href="<?php echo e(url('faqs/itemdelete/'.$row->faqID.'/'.$item->id)); ?>" class="btn btn-sm btn-white itemDelete"><i class="icon-remove"></i> Delete Item  </a>
+				<?php endif; ?>
+
+			<hr />				
+			<?php endif; ?>	
+			</div>		
+			<?php if(isset($items) && count($items)>=1): ?>
+				<?php $items = $items[0]; ?>
+				<div class="displayItem">
+					<h2> <?php echo e($items->question); ?> </h2>
+					<hr />
+					<div>
+						<?php echo \App\Library\Slimdown::render( strip_tags($items->answer) ); ?>
+
+					</div>
+				</div>
+				
+			<?php endif; ?>
+
+		</div>
+		<div class="clr clear"></div>
+
+	</div>
+
+
+</div>	
+
+	</div>
+</div>
+	 
+<style type="text/css">
+	ul.faqTree { margin: 0; padding: 0; list-style: none;}
+	ul.faqTree li {}
+	ul.faqTree li h4 {  padding-bottom: 5px;}	
+	ul.faqTree li h4 a{ }
+	ul.faqTree li ul { margin: 0; padding-top: 0; list-style: none; margin-left: -30px;}
+	ul.faqTree li ul li a{ font-size: 11px;}
+	.displayItem { font-size: 11px; }
+
+</style>	  
+<script type="text/javascript">
+$(function() {
+	$('.sectionDelete , .itemDelete').click(function(){
+		if(confirm('Are u sure remove this section/item ?'))
+		{
+			return true
+		} else {
+			return false;
+		}
+		return false;
+	})
+	$('.editItem').click(function(){
+		$('.displayItem').hide();		
+		$('.displayEdit').show();
+	});
+	$('.closeItem').click(function(){
+		$('.displayItem').show();		
+		$('.displayEdit').hide();		
+	});
+})
+</script>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
