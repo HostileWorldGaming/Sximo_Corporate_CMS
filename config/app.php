@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'url' => 'http://localhost/Sximo_Corporate_CMS\public',
+    'url' => 'http://sximocorporatecms.apphb.com/public',
 
     /*
     |--------------------------------------------------------------------------
